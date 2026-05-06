@@ -19,11 +19,21 @@
       <tr>
         <td>
           <strong>{{ item.name }}</strong>
+          {% if item.on_flash_sale %}
+          <span class="flash-badge" style="display:inline-block; margin-left:0.5rem;">Flash Sale</span>
+          {% endif %}
         </td>
         <td>
           <input class="quantity-input" type="number" name="qty_{{ item.id }}" value="{{ item.quantity }}" min="0" />
         </td>
-        <td>${{ item.price }}</td>
+        <td>
+          {% if item.on_flash_sale %}
+          <span class="flash-price">${{ item.price }}</span>
+          <span class="original-price">${{ item.original_price }}</span>
+          {% else %}
+          ${{ item.price }}
+          {% endif %}
+        </td>
         <td>${{ item.subtotal }}</td>
       </tr>
       {% endfor %}

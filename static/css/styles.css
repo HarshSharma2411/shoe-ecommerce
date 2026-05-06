@@ -371,3 +371,114 @@ textarea {
     width: 100%;
   }
 }
+
+/* Flash Sale Styles */
+.flash-announcement {
+  background: #c0392b;
+  color: #fff;
+  text-align: center;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.flash-announcement a {
+  color: #fff;
+  text-decoration: underline;
+  margin-left: 0.75rem;
+  font-weight: 700;
+}
+
+.flash-nav-link {
+  color: #c0392b !important;
+  font-weight: 700;
+}
+
+.flash-nav-link:hover {
+  color: #e74c3c !important;
+}
+
+.flash-sale-banner {
+  background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+  color: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  margin: 1.5rem 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.flash-sale-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.flash-sale-banner h2 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.flash-sale-banner p {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.flash-sale-banner .cta-link {
+  background: #fff;
+  color: #c0392b;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.flash-sale-banner .cta-link:hover {
+  background: #f8f8f8;
+}
+
+.countdown {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.flash-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: #c0392b;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.4rem;
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.flash-badge-lg {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+}
+
+.card {
+  position: relative;
+}
+
+.flash-price {
+  color: #c0392b;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: var(--muted);
+  font-size: 0.9em;
+  margin-left: 0.4rem;
+}

@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="product-detail">
-  <img src="{{ product.image_url }}" alt="{{ product.name }}" />
+  <div style="position:relative;">
+    {% if active_sale and product.flash_sale %}
+    <div class="flash-badge flash-badge-lg">⚡ Flash Sale</div>
+    {% endif %}
+    <img src="{{ product.image_url }}" alt="{{ product.name }}" />
+  </div>
   <div class="product-info">
     <div>
       <p>{{ product.category }}</p>
@@ -11,7 +16,14 @@
         <span>{{ product.stock }} items in stock</span>
       </div>
       <p>{{ product.description }}</p>
+      {% if active_sale and product.flash_sale and product.flash_sale_price %}
+      <p class="price">
+        <span class="flash-price">${{ product.flash_sale_price }}</span>
+        <span class="original-price">${{ product.price }}</span>
+      </p>
+      {% else %}
       <p class="price">${{ product.price }}</p>
+      {% endif %}
     </div>
     <form action="{{ url_for('add_to_cart') }}" method="post">
       <input type="hidden" name="product_id" value="{{ product.id }}" />

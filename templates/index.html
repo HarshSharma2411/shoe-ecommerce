@@ -21,6 +21,33 @@
   </div>
 </section>
 
+{% if active_sale and flash_sale_products %}
+<div class="flash-sale-banner">
+  <div class="flash-sale-banner-content">
+    <h2>⚡ Flash Sale</h2>
+    <p>Limited-time deals — grab them before they're gone!</p>
+    <a class="cta-link" href="{{ url_for('flash_sale') }}">View All Flash Sale Items</a>
+  </div>
+</div>
+<div class="grid products-grid" style="margin-top:1rem;">
+  {% for product in flash_sale_products %}
+  <article class="card">
+    <div class="flash-badge">Flash Sale</div>
+    <img src="{{ product.image_url }}" alt="{{ product.name }}" />
+    <div class="card-body">
+      <h3>{{ product.name }}</h3>
+      <p>{{ product.category }}</p>
+      <p class="price">
+        <span class="flash-price">${{ product.flash_sale_price }}</span>
+        <span class="original-price">${{ product.price }}</span>
+      </p>
+      <a class="cta-link" href="{{ url_for('product', product_id=product.id) }}">View details</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endif %}
+
 <div class="section-heading">
   <h2>Featured Picks</h2>
   <a class="cta-link" href="{{ url_for('category', category_name='Fragrances') }}">View all</a>
@@ -28,11 +55,21 @@
 <div class="grid products-grid">
   {% for product in featured %}
   <article class="card">
+    {% if active_sale and product.flash_sale %}
+    <div class="flash-badge">Flash Sale</div>
+    {% endif %}
     <img src="{{ product.image_url }}" alt="{{ product.name }}" />
     <div class="card-body">
       <h3>{{ product.name }}</h3>
       <p>{{ product.category }}</p>
+      {% if active_sale and product.flash_sale and product.flash_sale_price %}
+      <p class="price">
+        <span class="flash-price">${{ product.flash_sale_price }}</span>
+        <span class="original-price">${{ product.price }}</span>
+      </p>
+      {% else %}
       <p class="price">${{ product.price }}</p>
+      {% endif %}
       <a class="cta-link" href="{{ url_for('product', product_id=product.id) }}">View details</a>
     </div>
   </article>
@@ -46,11 +83,21 @@
 <div class="grid products-grid">
   {% for product in new_arrivals %}
   <article class="card">
+    {% if active_sale and product.flash_sale %}
+    <div class="flash-badge">Flash Sale</div>
+    {% endif %}
     <img src="{{ product.image_url }}" alt="{{ product.name }}" />
     <div class="card-body">
       <h3>{{ product.name }}</h3>
       <p>{{ product.category }}</p>
+      {% if active_sale and product.flash_sale and product.flash_sale_price %}
+      <p class="price">
+        <span class="flash-price">${{ product.flash_sale_price }}</span>
+        <span class="original-price">${{ product.price }}</span>
+      </p>
+      {% else %}
       <p class="price">${{ product.price }}</p>
+      {% endif %}
       <a class="cta-link" href="{{ url_for('product', product_id=product.id) }}">Shop now</a>
     </div>
   </article>

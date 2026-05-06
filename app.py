@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
+from datetime import datetime, timezone
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, "store.db")
@@ -154,14 +155,28 @@ def get_db_connection():
 
 
 def initialize_database():
-    if not os.path.exists(DATABASE):
-        conn = get_db_connection()
-        conn.execute(
-            "CREATE TABLE products (id INTEGER PRIMARY KEY, name TEXT, category TEXT, price REAL, description TEXT, image_url TEXT, stock INTEGER, rating REAL, tags TEXT)"
-        )
-        conn.execute(
-            "CREATE TABLE orders (id INTEGER PRIMARY KEY AUTOINCREMENT, full_name TEXT, email TEXT, address TEXT, city TEXT, postal_code TEXT, country TEXT, total REAL, items TEXT)"
-        )
+    conn = get_db_connection()
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY, name TEXT, category TEXT, price REAL, description TEXT, image_url TEXT, stock INTEGER, rating REAL, tags TEXT)"
+    )
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT, full_name TEXT, email TEXT, address TEXT, city TEXT, postal_code TEXT, country TEXT, total REAL, items TEXT)"
+    )
+    # Add flash sale columns to products if they don't exist yet
+    for col_def in [
+        "ALTER TABLE products ADD COLUMN flash_sale INTEGER DEFAULT 0",
+        "ALTER TABLE products ADD COLUMN flash_sale_price REAL",
+    ]:
+        try:
+            conn.execute(col_def)
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+    # Create flash_sales table
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS flash_sales (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TEXT NOT NULL, end_time TEXT NOT NULL, is_active INTEGER DEFAULT 1)"
+    )
+    # Seed products if table is empty
+    if not conn.execute("SELECT 1 FROM products LIMIT 1").fetchone():
         for product in PRODUCTS:
             conn.execute(
                 "INSERT INTO products (id, name, category, price, description, image_url, stock, rating, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -177,8 +192,8 @@ def initialize_database():
                     product["tags"],
                 ),
             )
-        conn.commit()
-        conn.close()
+    conn.commit()
+    conn.close()
 
 
 def query_products(query, args=(), one=False):
@@ -189,6 +204,25 @@ def query_products(query, args=(), one=False):
     return rows[0] if one and rows else rows
 
 
+def get_active_flash_sale():
+    """Return the currently active flash sale row, or None if no sale is running."""
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    conn = get_db_connection()
+    cur = conn.execute(
+        "SELECT * FROM flash_sales WHERE is_active = 1 AND start_time <= ? AND end_time >= ? LIMIT 1",
+        (now, now),
+    )
+    row = cur.fetchone()
+    conn.close()
+    return row
+
+
+@app.context_processor
+def inject_flash_sale():
+    """Make active_sale available in every template."""
+    return dict(active_sale=get_active_flash_sale())
+
+
 def get_cart_items():
     cart = session.get("cart", {})
     if not cart:
@@ -196,14 +230,19 @@ def get_cart_items():
     placeholder = []
     ids = tuple(cart.keys())
     products = query_products(f"SELECT * FROM products WHERE id IN ({','.join('?' for _ in ids)})", ids)
+    active_sale = get_active_flash_sale()
     for product in products:
         quantity = cart[str(product["id"])] if str(product["id"]) in cart else cart.get(product["id"], 0)
+        on_flash_sale = bool(active_sale and product["flash_sale"] and product["flash_sale_price"])
+        price = product["flash_sale_price"] if on_flash_sale else product["price"]
         placeholder.append({
             "id": product["id"],
             "name": product["name"],
-            "price": product["price"],
+            "price": price,
+            "original_price": product["price"],
+            "on_flash_sale": on_flash_sale,
             "quantity": quantity,
-            "subtotal": product["price"] * quantity,
+            "subtotal": price * quantity,
             "image_url": product["image_url"],
         })
     return placeholder
@@ -214,14 +253,28 @@ def index():
     featured = query_products("SELECT * FROM products ORDER BY rating DESC LIMIT 6")
     new_arrivals = query_products("SELECT * FROM products ORDER BY id DESC LIMIT 4")
     categories = CATEGORIES
-    return render_template("index.html", featured=featured, new_arrivals=new_arrivals, categories=categories)
+    active_sale = get_active_flash_sale()
+    flash_sale_products = []
+    if active_sale:
+        flash_sale_products = query_products(
+            "SELECT * FROM products WHERE flash_sale = 1 ORDER BY rating DESC LIMIT 4"
+        )
+    return render_template(
+        "index.html",
+        featured=featured,
+        new_arrivals=new_arrivals,
+        categories=categories,
+        active_sale=active_sale,
+        flash_sale_products=flash_sale_products,
+    )
 
 
 @app.route("/category/<category_name>")
 def category(category_name):
     products = query_products("SELECT * FROM products WHERE category = ? ORDER BY rating DESC", (category_name,))
     categories = CATEGORIES
-    return render_template("category.html", products=products, category_name=category_name, categories=categories)
+    active_sale = get_active_flash_sale()
+    return render_template("category.html", products=products, category_name=category_name, categories=categories, active_sale=active_sale)
 
 
 @app.route("/product/<int:product_id>")
@@ -230,7 +283,8 @@ def product(product_id):
     if not product:
         return render_template("404.html"), 404
     categories = CATEGORIES
-    return render_template("product.html", product=product, categories=categories)
+    active_sale = get_active_flash_sale()
+    return render_template("product.html", product=product, categories=categories, active_sale=active_sale)
 
 
 @app.route("/search")
@@ -245,6 +299,26 @@ def search():
             (wildcard, wildcard, wildcard),
         )
     return render_template("category.html", products=products, category_name=f"Search results for '{query_text}'", categories=categories)
+
+
+@app.route("/flash-sale")
+def flash_sale():
+    active_sale = get_active_flash_sale()
+    categories = CATEGORIES
+    products = []
+    sale_end_time = None
+    if active_sale:
+        products = query_products(
+            "SELECT * FROM products WHERE flash_sale = 1 ORDER BY rating DESC"
+        )
+        sale_end_time = active_sale["end_time"]
+    return render_template(
+        "flash_sale.html",
+        products=products,
+        active_sale=active_sale,
+        sale_end_time=sale_end_time,
+        categories=categories,
+    )
 
 
 @app.route("/add-to-cart", methods=["POST"])
@@ -369,6 +443,7 @@ def page_not_found(error):
     return render_template("404.html", categories=CATEGORIES), 404
 
 
+initialize_database()
+
 if __name__ == "__main__":
-    initialize_database()
     app.run(debug=True)
