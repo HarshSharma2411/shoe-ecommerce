@@ -100,5 +100,4 @@ def test_checkout_post_success(mock_url_for, mock_redirect, mock_flash, mock_ses
     mock_session.pop.assert_called_once_with('cart', None)
     mock_flash.assert_called_once_with("Thank you for your order! Your purchase has been processed.", "success")
     mock_url_for.assert_called_with('index')
-    mock_redirect.assert_called_once()</content>
-<parameter name="filePath">c:\Users\HarshSharma\Downloads\InClassDemo-GHC (30thApril)\test_app.py
+    mock_redirect.assert_called_once()
