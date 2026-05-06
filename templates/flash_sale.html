@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="section-heading">
+  <h2>⚡ Flash Sale</h2>
+</div>
+
+{% if active_sale %}
+<div class="flash-sale-banner">
+  <div class="flash-sale-banner-content">
+    <p>Hurry — these deals expire soon!</p>
+    <div class="countdown" id="countdown" aria-live="polite" aria-label="Countdown timer"></div>
+  </div>
+</div>
+
+{% if products %}
+<div class="grid products-grid" style="margin-top:1.5rem;">
+  {% for product in products %}
+  <article class="card">
+    <div class="flash-badge">Flash Sale</div>
+    <img src="{{ product.image_url }}" alt="{{ product.name }}" />
+    <div class="card-body">
+      <h3>{{ product.name }}</h3>
+      <p>{{ product.category }}</p>
+      <p class="price">
+        <span class="flash-price">${{ product.flash_sale_price }}</span>
+        <span class="original-price">${{ product.price }}</span>
+      </p>
+      <a class="cta-link" href="{{ url_for('product', product_id=product.id) }}">View details</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+  <p>No products are currently on flash sale.</p>
+{% endif %}
+
+<script>
+  (function () {
+    var endTime = new Date("{{ sale_end_time }} UTC").getTime();
+    var el = document.getElementById("countdown");
+
+    function pad(n) { return String(n).padStart(2, "0"); }
+
+    function tick() {
+      var now = Date.now();
+      var diff = Math.max(0, Math.floor((endTime - now) / 1000));
+      var h = Math.floor(diff / 3600);
+      var m = Math.floor((diff % 3600) / 60);
+      var s = diff % 60;
+      el.textContent = "Sale ends in: " + pad(h) + ":" + pad(m) + ":" + pad(s);
+      if (diff > 0) {
+        setTimeout(tick, 1000);
+      } else {
+        el.textContent = "Sale has ended.";
+      }
+    }
+
+    tick();
+  })();
+</script>
+
+{% else %}
+<div class="form-card" style="margin-top:1.5rem; text-align:center;">
+  <p>There is no active flash sale at the moment.</p>
+  <p>Check back soon for our next limited-time deal!</p>
+  <a class="cta-link" href="{{ url_for('index') }}">Continue Shopping</a>
+</div>
+{% endif %}
+{% endblock %}
