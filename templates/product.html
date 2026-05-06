@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="product-detail">
+  <img src="{{ product.image_url }}" alt="{{ product.name }}" />
+  <div class="product-info">
+    <div>
+      <p>{{ product.category }}</p>
+      <h1>{{ product.name }}</h1>
+      <div class="product-meta">
+        <span>Rating {{ product.rating }} ★</span>
+        <span>{{ product.stock }} items in stock</span>
+      </div>
+      <p>{{ product.description }}</p>
+      <p class="price">${{ product.price }}</p>
+    </div>
+    <form action="{{ url_for('add_to_cart') }}" method="post">
+      <input type="hidden" name="product_id" value="{{ product.id }}" />
+      <div class="form-field">
+        <label for="quantity">Quantity</label>
+        <input class="quantity-input" type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" />
+      </div>
+      <button class="button" type="submit">Add to Bag</button>
+    </form>
+    <div class="form-card">
+      <h2>Product details</h2>
+      <p>Category: {{ product.category }}</p>
+      <p>Item code: ST-{{ '%04d' | format(product.id) }}</p>
+      <p>Free shipping on all orders over $100.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero">
+  <div class="hero-card">
+    <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80" alt="Fashion editorial" />
+    <div class="hero-card-content">
+      <p>New Season</p>
+      <h1>Discover the latest fashion collections</h1>
+      <p>Shop timeless clothing, statement accessories, and premium fragrances for every modern wardrobe.</p>
+      <a class="cta-link" href="{{ url_for('category', category_name='Clothing') }}">Shop Clothing</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <img src="https://images.unsplash.com/photo-1495121605193-b116b5b9c5d6?auto=format&fit=crop&w=1200&q=80" alt="Accessories display" />
+    <div class="hero-card-content">
+      <p>Style Essentials</p>
+      <h2>Accessories, bags & jewelry</h2>
+      <p>Complete your look with our curated selection of luxury accessories.</p>
+      <a class="cta-link" href="{{ url_for('category', category_name='Accessories') }}">Shop Accessories</a>
+    </div>
+  </div>
+</section>
+
+<div class="section-heading">
+  <h2>Featured Picks</h2>
+  <a class="cta-link" href="{{ url_for('category', category_name='Fragrances') }}">View all</a>
+</div>
+<div class="grid products-grid">
+  {% for product in featured %}
+  <article class="card">
+    <img src="{{ product.image_url }}" alt="{{ product.name }}" />
+    <div class="card-body">
+      <h3>{{ product.name }}</h3>
+      <p>{{ product.category }}</p>
+      <p class="price">${{ product.price }}</p>
+      <a class="cta-link" href="{{ url_for('product', product_id=product.id) }}">View details</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+<div class="section-heading">
+  <h2>New Arrivals</h2>
+  <a class="cta-link" href="{{ url_for('category', category_name='Clothing') }}">Explore more</a>
+</div>
+<div class="grid products-grid">
+  {% for product in new_arrivals %}
+  <article class="card">
+    <img src="{{ product.image_url }}" alt="{{ product.name }}" />
+    <div class="card-body">
+      <h3>{{ product.name }}</h3>
+      <p>{{ product.category }}</p>
+      <p class="price">${{ product.price }}</p>
+      <a class="cta-link" href="{{ url_for('product', product_id=product.id) }}">Shop now</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}

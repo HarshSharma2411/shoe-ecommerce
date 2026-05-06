@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <rect width="400" height="500" fill="#fff4b3"/>
+  <circle cx="200" cy="160" r="70" fill="#ffeb3b"/>
+  <rect x="60" y="280" width="280" height="140" fill="#ffd54f" rx="10"/>
+  <text x="200" y="340" font-size="20" fill="#333" text-anchor="middle" font-weight="bold">Fresh Citrus</text>
+  <text x="200" y="370" font-size="20" fill="#333" text-anchor="middle" font-weight="bold">Body Mist</text>
+  <text x="200" y="420" font-size="16" fill="#333" text-anchor="middle">Fragrances</text>
+</svg>

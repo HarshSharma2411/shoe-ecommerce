@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <rect width="400" height="500" fill="#dcdcdc"/>
+  <rect x="50" y="100" width="300" height="260" fill="#b8b8b8" rx="10"/>
+  <line x1="80" y1="240" x2="320" y2="240" stroke="#999" stroke-width="4"/>
+  <text x="200" y="200" font-size="20" fill="#fff" text-anchor="middle" font-weight="bold">Wide-Leg</text>
+  <text x="200" y="300" font-size="20" fill="#fff" text-anchor="middle" font-weight="bold">Trousers</text>
+  <text x="200" y="420" font-size="16" fill="#333" text-anchor="middle">Clothing</text>
+</svg>

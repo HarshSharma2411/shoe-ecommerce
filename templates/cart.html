@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="section-heading">
+  <h2>Your Bag</h2>
+</div>
+{% if items %}
+<form action="{{ url_for('update_cart') }}" method="post" class="cart-card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>
+          <strong>{{ item.name }}</strong>
+        </td>
+        <td>
+          <input class="quantity-input" type="number" name="qty_{{ item.id }}" value="{{ item.quantity }}" min="0" />
+        </td>
+        <td>${{ item.price }}</td>
+        <td>${{ item.subtotal }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="action-row" style="justify-content: space-between; align-items: center; margin-top: 1rem;">
+    <button class="button" type="submit">Update Bag</button>
+    <a class="cta-link" href="{{ url_for('clear_cart') }}">Clear bag</a>
+  </div>
+</form>
+<div class="checkout-card" style="margin-top: 1.5rem;">
+  <h2>Order summary</h2>
+  <p><strong>Total:</strong> ${{ total }}</p>
+  <a class="cta-link" href="{{ url_for('checkout') }}">Proceed to checkout</a>
+</div>
+{% else %}
+  <p>Your bag is empty. Browse our collections to add products.</p>
+  <a class="cta-link" href="{{ url_for('index') }}">Continue shopping</a>
+{% endif %}
+{% endblock %}

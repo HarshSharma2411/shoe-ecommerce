@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <rect width="400" height="500" fill="#8b7355"/>
+  <rect x="50" y="80" width="300" height="280" fill="#654321" rx="10"/>
+  <text x="200" y="230" font-size="20" fill="#d4a574" text-anchor="middle" font-weight="bold">Classic Leather</text>
+  <text x="200" y="260" font-size="20" fill="#d4a574" text-anchor="middle" font-weight="bold">Handbag</text>
+  <text x="200" y="420" font-size="16" fill="#333" text-anchor="middle">Accessories</text>
+</svg>

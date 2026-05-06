@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <rect width="400" height="500" fill="#8b4789"/>
+  <rect x="80" y="150" width="240" height="200" fill="#5e2e5e" rx="12"/>
+  <line x1="110" y1="170" x2="110" y2="330" stroke="#c559c5" stroke-width="3"/>
+  <text x="200" y="270" font-size="20" fill="#e6b3e6" text-anchor="middle" font-weight="bold">Velvet Evening</text>
+  <text x="200" y="300" font-size="20" fill="#e6b3e6" text-anchor="middle" font-weight="bold">Clutch</text>
+  <text x="200" y="420" font-size="16" fill="#333" text-anchor="middle">Accessories</text>
+</svg>

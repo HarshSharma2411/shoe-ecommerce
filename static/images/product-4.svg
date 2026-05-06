@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <rect width="400" height="500" fill="#d4a76a"/>
+  <circle cx="200" cy="150" r="80" fill="#c59d5f"/>
+  <rect x="100" y="260" width="200" height="120" fill="#b8860b" rx="5"/>
+  <text x="200" y="310" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">Chain-Link</text>
+  <text x="200" y="335" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">Necklace</text>
+  <text x="200" y="420" font-size="16" fill="#333" text-anchor="middle">Accessories</text>
+</svg>
